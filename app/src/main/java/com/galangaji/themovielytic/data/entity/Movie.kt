@@ -1,8 +1,12 @@
 package com.galangaji.themovielytic.data.entity
 
 
+import android.os.Parcelable
+import com.galangaji.themovielytic.BuildConfig
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Movie(
     val popularity: Double = 0.0,
     @SerializedName("vote_count")
@@ -27,12 +31,16 @@ data class Movie(
     @SerializedName("release_date")
     val releaseDate: String = "",
     val genres: List<Genre> = listOf()
-)
+) : Parcelable {
+    fun bannerUrl() = "${BuildConfig.IMAGE_URL}$backdropPath"
+    fun posterUrl() = "${BuildConfig.IMAGE_URL}$posterPath"
+}
 
+@Parcelize
 data class Genre(
     val id: Int = 0,
     val name: String = ""
-)
+) : Parcelable
 
 data class MovieResponse(
     val page: Int = 0,
