@@ -41,7 +41,9 @@ ext {
     rxkotlinVersion = '2.4.0'
     rxjavaVersion = '2.2.16'
 
-    glideVersion='4.11.0'
-    compilerVersion='4.10.0'
-    gsonVersion='2.8.6'
+    glideVersion = '4.11.0'
+    compilerVersion = '4.10.0'
+    gsonVersion = '2.8.6'
+
+    roomVersion = '2.2.3'
 }

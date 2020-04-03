@@ -2,11 +2,14 @@ package com.galangaji.themovielytic.data.entity
 
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.galangaji.themovielytic.BuildConfig
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@Entity(tableName = "favorites_movie")
 data class Movie(
     val popularity: Double = 0.0,
     @SerializedName("vote_count")
@@ -14,6 +17,7 @@ data class Movie(
     val video: Boolean = false,
     @SerializedName("poster_path")
     val posterPath: String = "",
+    @PrimaryKey
     val id: Int = 0,
     val adult: Boolean = false,
     @SerializedName("backdrop_path")
