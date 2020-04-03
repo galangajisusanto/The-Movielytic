@@ -13,5 +13,5 @@ import dagger.Component
 ])
 interface MainComponent {
     fun injectMain(activity: MainActivity)
-    fun injectDeatai(activity: DetailMovieActivity)
+    fun injectDetail(activity: DetailMovieActivity)
 }

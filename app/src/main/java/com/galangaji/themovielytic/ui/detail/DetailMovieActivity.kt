@@ -3,7 +3,6 @@ package com.galangaji.themovielytic.ui.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -112,7 +111,7 @@ class DetailMovieActivity : AppCompatActivity() {
             .builder()
             .popularMovieModule(PopularMovieModule())
             .build()
-            .injectDeatai(this)
+            .injectDetail(this)
     }
 
 

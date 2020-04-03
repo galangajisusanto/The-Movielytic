@@ -3,6 +3,7 @@ package com.galangaji.themovielytic.di.module
 import com.galangaji.themovielytic.abstraction.util.rx.AppSchedulerProvider
 import com.galangaji.themovielytic.abstraction.util.rx.SchedulerProvider
 import com.galangaji.themovielytic.data.domain.MovieUseCase
+import com.galangaji.themovielytic.data.presistance.FavoriteMovieDao
 import com.galangaji.themovielytic.data.repository.MovieRepository
 import com.galangaji.themovielytic.data.repository.MovieRepositoryImpl
 import com.galangaji.themovielytic.di.MovieScope
@@ -12,7 +13,8 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.create
 
-@Module class PopularMovieModule {
+@Module
+class PopularMovieModule {
 
     @Provides
     @MovieScope
@@ -22,8 +24,11 @@ import retrofit2.create
 
     @Provides
     @MovieScope
-    fun providePopularMovieRepository(services: ApiService): MovieRepository {
-        return MovieRepositoryImpl(services)
+    fun providePopularMovieRepository(
+        services: ApiService,
+        favoriteMovieDao: FavoriteMovieDao
+    ): MovieRepository {
+        return MovieRepositoryImpl(services, favoriteMovieDao)
     }
 
     @Provides
