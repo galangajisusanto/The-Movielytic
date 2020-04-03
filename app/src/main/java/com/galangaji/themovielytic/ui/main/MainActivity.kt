@@ -2,9 +2,11 @@ package com.galangaji.themovielytic.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.galangaji.themovielytic.R
 import com.galangaji.themovielytic.abstraction.state.LoaderState
 import com.galangaji.themovielytic.abstraction.util.showToast
@@ -13,16 +15,18 @@ import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
 import com.galangaji.themovielytic.di.module.PopularMovieModule
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
+
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MovieViewModel
     private val movies = mutableListOf<Movie>()
     private lateinit var _adapter: MovieAdapter
+    private lateinit var categoryDialog: CategoryListDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         initInjector()
 
         viewModel = viewModelProvider(viewModelFactory)
-        viewModel.getUpcomingMovie()
+        viewModel.getPopularMovie()
 
         initView()
         initObservable()
@@ -63,11 +67,15 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         _adapter = MovieAdapter(movies)
         lstMovies.apply {
-            layoutManager = GridLayoutManager(
-                this@MainActivity,
-                2
+            layoutManager = LinearLayoutManager(
+                this@MainActivity
             )
             adapter = _adapter
+        }
+        categoryDialog = CategoryListDialogFragment.newInstance(4, this)
+
+        btnChoseCategory.setOnClickListener {
+            categoryDialog.show(supportFragmentManager, "category")
         }
     }
 
@@ -76,6 +84,28 @@ class MainActivity : AppCompatActivity() {
             .builder()
             .popularMovieModule(PopularMovieModule())
             .build()
-            .inject(this)
+            .injectMain(this)
+    }
+
+    override fun onClickNowPlaying() {
+        viewModel.getNowPlayingMovie()
+        categoryDialog.dismiss()
+    }
+
+    override fun onTopRated() {
+        viewModel.getTopRatedMovie()
+        categoryDialog.dismiss()
+    }
+
+    override fun onClickUpcoming() {
+        viewModel.getUpcomingMovie()
+        categoryDialog.dismiss()
+    }
+
+    override fun onClickPopular() {
+        viewModel.getPopularMovie()
+        categoryDialog.dismiss()
     }
 }
+
+

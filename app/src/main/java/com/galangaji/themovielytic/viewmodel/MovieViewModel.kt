@@ -6,6 +6,7 @@ import com.galangaji.themovielytic.abstraction.base.BaseViewModel
 import com.galangaji.themovielytic.abstraction.state.LoaderState
 import com.galangaji.themovielytic.abstraction.util.rx.SchedulerProvider
 import com.galangaji.themovielytic.data.domain.MovieUseCase
+import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.data.entity.MovieResponse
 import javax.inject.Inject
 
@@ -15,6 +16,15 @@ interface MovieContract {
 
     fun onErrorUpcomingMovie(throwable: Throwable)
     fun getUpcomingMovie()
+
+    fun onErrorTopRatedMovie(throwable: Throwable)
+    fun getTopRatedMovie()
+
+    fun onErrorNowPlayingMovie(throwable: Throwable)
+    fun getNowPlayingMovie()
+
+    fun onErrorDetailMovie(throwable: Throwable)
+    fun getDetailMovie(idMovie: Int)
 }
 
 class MovieViewModel @Inject constructor(
@@ -33,6 +43,10 @@ class MovieViewModel @Inject constructor(
     private val _state = MutableLiveData<LoaderState>()
     val state: LiveData<LoaderState>
         get() = _state
+
+    private val _detailMovie = MutableLiveData<Movie>()
+    val detailMovie: LiveData<Movie>
+        get() = _detailMovie
 
     override fun onErrorPopularMovie(throwable: Throwable) {
         _error.postValue(throwable.message)
@@ -66,6 +80,60 @@ class MovieViewModel @Inject constructor(
             .subscribe {
                 hideLoading()
                 _movies.postValue(it)
+            }
+        )
+    }
+
+    override fun onErrorTopRatedMovie(throwable: Throwable) {
+        _error.postValue(throwable.message)
+        hideLoading()
+    }
+
+    override fun getTopRatedMovie() {
+        subscribe(useCase.getTopRatedMovie()
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .doOnSubscribe { showLoading() }
+            .doOnError { onErrorPopularMovie(it) }
+            .subscribe {
+                hideLoading()
+                _movies.postValue(it)
+            }
+        )
+    }
+
+    override fun onErrorNowPlayingMovie(throwable: Throwable) {
+        _error.postValue(throwable.message)
+        hideLoading()
+    }
+
+    override fun getNowPlayingMovie() {
+        subscribe(useCase.getNowPlayingMovie()
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .doOnSubscribe { showLoading() }
+            .doOnError { onErrorPopularMovie(it) }
+            .subscribe {
+                hideLoading()
+                _movies.postValue(it)
+            }
+        )
+    }
+
+    override fun onErrorDetailMovie(throwable: Throwable) {
+        _error.postValue(throwable.message)
+        hideLoading()
+    }
+
+    override fun getDetailMovie(idMovie: Int) {
+        subscribe(useCase.getDetailMovie(idMovie)
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .doOnSubscribe { showLoading() }
+            .doOnError { onErrorPopularMovie(it) }
+            .subscribe {
+                hideLoading()
+                _detailMovie.postValue(it)
             }
         )
     }
