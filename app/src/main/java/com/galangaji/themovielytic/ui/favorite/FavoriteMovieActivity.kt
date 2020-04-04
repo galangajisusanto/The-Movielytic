@@ -101,4 +101,9 @@ class FavoriteMovieActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
+
+    override fun onResume() {
+        viewModel.getAllFavoriteMovie()
+        super.onResume()
+    }
 }

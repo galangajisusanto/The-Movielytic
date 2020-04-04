@@ -2,6 +2,7 @@ package com.galangaji.themovielytic.data.repository
 
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.data.entity.MovieResponse
+import com.galangaji.themovielytic.data.entity.ReviewResponse
 import com.galangaji.themovielytic.data.presistance.FavoriteMovieDao
 import com.galangaji.themovielytic.network.ApiService
 import io.reactivex.Completable
@@ -44,5 +45,9 @@ class MovieRepositoryImpl @Inject constructor(
 
     override fun insertFavoriteMovie(movie: Movie): Completable {
         return favoriteMovieDao.insertFavoriteMovie(movie)
+    }
+
+    override fun getAllReviewMovie(idMovie: Int): Flowable<ReviewResponse> {
+        return apiService.getReviewsMovie(idMovie)
     }
 }

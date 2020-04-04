@@ -18,6 +18,7 @@ import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
 import com.galangaji.themovielytic.di.module.PopularMovieModule
 import com.galangaji.themovielytic.abstraction.util.DateUtils
+import com.galangaji.themovielytic.data.entity.Review
 import com.galangaji.themovielytic.di.module.RoomModule
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
 import kotlinx.android.synthetic.main.activity_detail_movie.*
@@ -32,6 +33,9 @@ class DetailMovieActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MovieViewModel
     private var movie = Movie()
+    private var isFavorite: Boolean = false
+    private lateinit var _adapter: ReviewAdapter
+    private val reviews = mutableListOf<Review>()
 
     companion object {
         private const val ID_MOVIE = "id_movie"
@@ -50,12 +54,6 @@ class DetailMovieActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail_movie)
         val extras = intent.extras
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-
-
 
         initInjector()
         viewModel = viewModelProvider(viewModelFactory)
@@ -63,16 +61,37 @@ class DetailMovieActivity : AppCompatActivity() {
         if (extras != null) {
             val idMovie = extras.getInt(ID_MOVIE)
             viewModel.getDetailMovie(idMovie)
+            viewModel.getReviewMovie(idMovie)
         }
 
-        button_insert.setOnClickListener {
-            viewModel.successInsertFavoriteMovie(movie)
-        }
-
-        button_delete.setOnClickListener {
-            viewModel.successDeleteFavoriteMovie(movie)
-        }
+        initView()
         initObservable()
+    }
+
+    private fun initView() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        _adapter = ReviewAdapter(reviews)
+        list_review.apply {
+            layoutManager = LinearLayoutManager(
+                this@DetailMovieActivity
+            )
+            adapter = _adapter
+        }
+
+
+
+        img_favorite.setOnClickListener {
+            if (isFavorite) {
+                viewModel.deleteFavoriteMovie(movie)
+            } else {
+                viewModel.insertFavoriteMovie(movie)
+            }
+            viewModel.getAllFavoriteMovie()
+        }
+
     }
 
     private fun initObservable() {
@@ -95,8 +114,31 @@ class DetailMovieActivity : AppCompatActivity() {
             this.movie = it
             updateUi(it)
             prepareRecGenres(it.genres)
+            viewModel.getAllFavoriteMovie()
 
         })
+
+        viewModel.favoriteMovies.observe(this, Observer {
+            this.isFavorite = it.any { x ->
+                x.id == movie.id
+            }
+            setImageFavorite(isFavorite)
+
+        })
+
+        viewModel.reviews.observe(this, Observer {
+            reviews.clear()
+            reviews.addAll(it.results)
+            _adapter.notifyDataSetChanged()
+        })
+    }
+
+    private fun setImageFavorite(isFavorite: Boolean) {
+        if (isFavorite) {
+            img_favorite.setImageResource(R.drawable.ic_favorite_black_24dp)
+        } else {
+            img_favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+        }
     }
 
     private fun updateUi(movie: Movie) {

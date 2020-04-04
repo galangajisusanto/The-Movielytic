@@ -3,6 +3,7 @@ package com.galangaji.themovielytic.data.domain
 import com.galangaji.themovielytic.abstraction.base.UseCase
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.data.entity.MovieResponse
+import com.galangaji.themovielytic.data.entity.ReviewResponse
 import com.galangaji.themovielytic.data.repository.MovieRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -43,5 +44,7 @@ open class MovieUseCase @Inject constructor(
         return repository.insertFavoriteMovie(movie)
     }
 
-
+    override fun getReviewMovies(idMovie: Int): Flowable<ReviewResponse> {
+        return repository.getAllReviewMovie(idMovie)
+    }
 }

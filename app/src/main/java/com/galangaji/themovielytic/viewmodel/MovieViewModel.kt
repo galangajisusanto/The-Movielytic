@@ -8,6 +8,7 @@ import com.galangaji.themovielytic.abstraction.util.rx.SchedulerProvider
 import com.galangaji.themovielytic.data.domain.MovieUseCase
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.data.entity.MovieResponse
+import com.galangaji.themovielytic.data.entity.ReviewResponse
 import javax.inject.Inject
 
 interface MovieContract {
@@ -30,10 +31,14 @@ interface MovieContract {
     fun getAllFavoriteMovie()
 
     fun onErrorDeleteFavoriteMovie(throwable: Throwable)
-    fun successDeleteFavoriteMovie(movie: Movie)
+    fun deleteFavoriteMovie(movie: Movie)
 
     fun onErrorInsertFavoriteMovie(throwable: Throwable)
-    fun successInsertFavoriteMovie(movie: Movie)
+    fun insertFavoriteMovie(movie: Movie)
+
+    fun onErrorGetReviewMovie(throwable: Throwable)
+    fun getReviewMovie(idMovie: Int)
+
 }
 
 class MovieViewModel @Inject constructor(
@@ -60,6 +65,10 @@ class MovieViewModel @Inject constructor(
     private val _favoriteMovies = MutableLiveData<List<Movie>>()
     val favoriteMovies: LiveData<List<Movie>>
         get() = _favoriteMovies
+
+    private val _reviews = MutableLiveData<ReviewResponse>()
+    val reviews: LiveData<ReviewResponse>
+        get() = _reviews
 
 
     override fun onErrorPopularMovie(throwable: Throwable) {
@@ -175,7 +184,7 @@ class MovieViewModel @Inject constructor(
         hideLoading()
     }
 
-    override fun successDeleteFavoriteMovie(movie: Movie) {
+    override fun deleteFavoriteMovie(movie: Movie) {
         subscribe((useCase.deleteFavoritesMovie(movie))
             .subscribeOn(schedulerProvider.io())
             .observeOn(schedulerProvider.ui())
@@ -192,7 +201,7 @@ class MovieViewModel @Inject constructor(
         hideLoading()
     }
 
-    override fun successInsertFavoriteMovie(movie: Movie) {
+    override fun insertFavoriteMovie(movie: Movie) {
         subscribe((useCase.insertFavoritesMovie(movie))
             .subscribeOn(schedulerProvider.io())
             .observeOn(schedulerProvider.ui())
@@ -200,6 +209,24 @@ class MovieViewModel @Inject constructor(
             .doOnError { onErrorDeleteFavoriteMovie(it) }
             .subscribe {
                 hideLoading()
+            }
+        )
+    }
+
+    override fun onErrorGetReviewMovie(throwable: Throwable) {
+        _error.postValue(throwable.message)
+        hideLoading()
+    }
+
+    override fun getReviewMovie(idMovie: Int) {
+        subscribe(useCase.getReviewMovies(idMovie)
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .doOnSubscribe { showLoading() }
+            .doOnError { onErrorGetReviewMovie(it) }
+            .subscribe {
+                hideLoading()
+                _reviews.postValue(it)
             }
         )
     }

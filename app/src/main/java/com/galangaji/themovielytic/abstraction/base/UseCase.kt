@@ -1,6 +1,8 @@
 package com.galangaji.themovielytic.abstraction.base
 
 import com.galangaji.themovielytic.data.entity.Movie
+import com.galangaji.themovielytic.data.entity.Review
+import com.galangaji.themovielytic.data.entity.ReviewResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 
@@ -13,5 +15,6 @@ abstract class UseCase<T> {
     abstract fun getAllFavoriteMovies(): Flowable<List<Movie>>
     abstract fun deleteFavoritesMovie(movie: Movie): Completable
     abstract fun insertFavoritesMovie(movie: Movie): Completable
+    abstract fun getReviewMovies(idMovie: Int): Flowable<ReviewResponse>
 
 }

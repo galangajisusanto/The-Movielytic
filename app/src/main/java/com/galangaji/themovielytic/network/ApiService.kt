@@ -2,6 +2,7 @@ package com.galangaji.themovielytic.network
 
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.data.entity.MovieResponse
+import com.galangaji.themovielytic.data.entity.ReviewResponse
 import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,6 +29,6 @@ interface ApiService {
     @GET("movie/{movie_id}/reviews")
     fun getReviewsMovie(
         @Path("movie_id") movieId: Int
-    ): Flowable<Movie>
+    ): Flowable<ReviewResponse>
 
 }
