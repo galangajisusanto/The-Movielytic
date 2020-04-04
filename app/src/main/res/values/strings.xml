@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">The Movielytic</string>
+    <string name="favorite_movie">Favorite Movies</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.galangaji.themovielytic.utils
+package com.galangaji.themovielytic.abstraction.util
 
 import java.text.SimpleDateFormat
 import java.util.*

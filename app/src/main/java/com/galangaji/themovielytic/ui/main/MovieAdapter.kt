@@ -4,14 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.galangaji.themovielytic.R
 import com.galangaji.themovielytic.abstraction.util.load
-import com.galangaji.themovielytic.abstraction.util.showToast
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.ui.detail.DetailMovieActivity
-import com.galangaji.themovielytic.utils.DateUtils
+import com.galangaji.themovielytic.abstraction.util.DateUtils
 import kotlinx.android.synthetic.main.item_movie.view.*
 import java.text.SimpleDateFormat
 import java.util.*

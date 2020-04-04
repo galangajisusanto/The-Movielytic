@@ -1,13 +1,11 @@
 package com.galangaji.themovielytic.data.presistance
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.galangaji.themovielytic.data.entity.Movie
 import io.reactivex.Completable
 import io.reactivex.Flowable
 
+@Dao
 interface FavoriteMovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

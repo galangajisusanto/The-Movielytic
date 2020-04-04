@@ -1,9 +1,11 @@
 package com.galangaji.themovielytic.di.module
 
+import android.content.Context
 import com.galangaji.themovielytic.abstraction.util.rx.AppSchedulerProvider
 import com.galangaji.themovielytic.abstraction.util.rx.SchedulerProvider
 import com.galangaji.themovielytic.data.domain.MovieUseCase
 import com.galangaji.themovielytic.data.presistance.FavoriteMovieDao
+import com.galangaji.themovielytic.data.presistance.FavoriteMovieDatabase
 import com.galangaji.themovielytic.data.repository.MovieRepository
 import com.galangaji.themovielytic.data.repository.MovieRepositoryImpl
 import com.galangaji.themovielytic.di.MovieScope

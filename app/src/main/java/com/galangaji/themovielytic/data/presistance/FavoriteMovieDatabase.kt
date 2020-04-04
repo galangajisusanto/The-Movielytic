@@ -16,10 +16,10 @@ abstract class FavoriteMovieDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): FavoriteMovieDatabase =
             INSTACE ?: synchronized(this) {
-                INSTACE ?: buidDatabase(context).also { INSTACE = it }
+                INSTACE ?: buildDatabase(context).also { INSTACE = it }
             }
 
-        private fun buidDatabase(context: Context) =
+        private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
                 FavoriteMovieDatabase::class.java, "favorite_movie.db"

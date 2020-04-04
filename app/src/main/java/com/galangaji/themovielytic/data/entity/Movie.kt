@@ -9,32 +9,32 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "favorites_movie")
+@Entity(tableName = "favorites_movie", ignoredColumns = ["genreIds", "genres"])
 data class Movie(
-    val popularity: Double = 0.0,
+    var popularity: Double = 0.0,
     @SerializedName("vote_count")
-    val voteCount: Int = 0,
-    val video: Boolean = false,
+    var voteCount: Int = 0,
+    var video: Boolean = false,
     @SerializedName("poster_path")
-    val posterPath: String = "",
+    var posterPath: String = "",
     @PrimaryKey
-    val id: Int = 0,
-    val adult: Boolean = false,
+    var id: Int = 0,
+    var adult: Boolean = false,
     @SerializedName("backdrop_path")
-    val backdropPath: String = "",
+    var backdropPath: String = "",
     @SerializedName("original_language")
-    val originalLanguage: String = "",
+    var originalLanguage: String = "",
     @SerializedName("original_title")
-    val originalTitle: String = "",
+    var originalTitle: String = "",
     @SerializedName("genre_ids")
-    val genreIds: List<Int> = listOf(),
-    val title: String = "",
+    var genreIds: List<Int> = listOf(),
+    var title: String = "",
     @SerializedName("vote_average")
-    val voteAverage: Double = 0.0,
-    val overview: String = "",
+    var voteAverage: Double = 0.0,
+    var overview: String = "",
     @SerializedName("release_date")
-    val releaseDate: String = "",
-    val genres: List<Genre> = listOf()
+    var releaseDate: String = "",
+    var genres: List<Genre> = listOf()
 ) : Parcelable {
     fun bannerUrl() = "${BuildConfig.IMAGE_URL}$backdropPath"
     fun posterUrl() = "${BuildConfig.IMAGE_URL}$posterPath"

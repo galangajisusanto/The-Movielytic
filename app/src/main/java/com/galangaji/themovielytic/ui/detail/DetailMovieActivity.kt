@@ -17,7 +17,8 @@ import com.galangaji.themovielytic.data.entity.Genre
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
 import com.galangaji.themovielytic.di.module.PopularMovieModule
-import com.galangaji.themovielytic.utils.DateUtils
+import com.galangaji.themovielytic.abstraction.util.DateUtils
+import com.galangaji.themovielytic.di.module.RoomModule
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_detail.*
@@ -49,12 +50,27 @@ class DetailMovieActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail_movie)
         val extras = intent.extras
 
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+
+
+
         initInjector()
         viewModel = viewModelProvider(viewModelFactory)
 
         if (extras != null) {
             val idMovie = extras.getInt(ID_MOVIE)
             viewModel.getDetailMovie(idMovie)
+        }
+
+        button_insert.setOnClickListener {
+            viewModel.successInsertFavoriteMovie(movie)
+        }
+
+        button_delete.setOnClickListener {
+            viewModel.successDeleteFavoriteMovie(movie)
         }
         initObservable()
     }
@@ -109,9 +125,15 @@ class DetailMovieActivity : AppCompatActivity() {
     private fun initInjector() {
         DaggerMainComponent
             .builder()
+            .roomModule(RoomModule(application))
             .popularMovieModule(PopularMovieModule())
             .build()
             .injectDetail(this)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
 

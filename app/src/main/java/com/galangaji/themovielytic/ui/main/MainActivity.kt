@@ -2,6 +2,8 @@ package com.galangaji.themovielytic.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +16,8 @@ import com.galangaji.themovielytic.abstraction.util.viewModelProvider
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
 import com.galangaji.themovielytic.di.module.PopularMovieModule
+import com.galangaji.themovielytic.di.module.RoomModule
+import com.galangaji.themovielytic.ui.favorite.FavoriteMovieActivity
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,6 +69,8 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
     }
 
     private fun initView() {
+        setSupportActionBar(toolbar_main)
+        toolbar_main.title = getString(R.string.app_name)
         _adapter = MovieAdapter(movies)
         lstMovies.apply {
             layoutManager = LinearLayoutManager(
@@ -82,6 +88,7 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
     private fun initInjector() {
         DaggerMainComponent
             .builder()
+            .roomModule(RoomModule(application))
             .popularMovieModule(PopularMovieModule())
             .build()
             .injectMain(this)
@@ -105,6 +112,19 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
     override fun onClickPopular() {
         viewModel.getPopularMovie()
         categoryDialog.dismiss()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_favorite) {
+            startActivity(FavoriteMovieActivity.generateIntent(this))
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 
