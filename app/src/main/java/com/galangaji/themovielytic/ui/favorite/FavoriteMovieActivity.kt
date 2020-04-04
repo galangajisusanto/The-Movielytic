@@ -13,10 +13,10 @@ import com.galangaji.themovielytic.abstraction.util.showToast
 import com.galangaji.themovielytic.abstraction.util.viewModelProvider
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
-import com.galangaji.themovielytic.di.module.PopularMovieModule
+import com.galangaji.themovielytic.di.module.MovieModule
 import com.galangaji.themovielytic.di.module.RoomModule
 import com.galangaji.themovielytic.ui.main.MovieAdapter
-import com.galangaji.themovielytic.viewmodel.MovieViewModel
+import com.galangaji.themovielytic.viewmodel.FavoriteMovieViewModel
 import kotlinx.android.synthetic.main.activity_favorite_movie.*
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class FavoriteMovieActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: MovieViewModel
+    private lateinit var viewModel: FavoriteMovieViewModel
     private val favoriteMovies = mutableListOf<Movie>()
     private lateinit var _adapter: MovieAdapter
 
@@ -92,7 +92,7 @@ class FavoriteMovieActivity : AppCompatActivity() {
         DaggerMainComponent
             .builder()
             .roomModule(RoomModule(application))
-            .popularMovieModule(PopularMovieModule())
+            .movieModule(MovieModule())
             .build()
             .injectFavorite(this)
     }

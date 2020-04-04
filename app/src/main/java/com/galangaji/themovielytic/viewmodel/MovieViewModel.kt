@@ -23,22 +23,6 @@ interface MovieContract {
 
     fun onErrorNowPlayingMovie(throwable: Throwable)
     fun getNowPlayingMovie()
-
-    fun onErrorDetailMovie(throwable: Throwable)
-    fun getDetailMovie(idMovie: Int)
-
-    fun onErrorGetAllFavoriteMovie(throwable: Throwable)
-    fun getAllFavoriteMovie()
-
-    fun onErrorDeleteFavoriteMovie(throwable: Throwable)
-    fun deleteFavoriteMovie(movie: Movie)
-
-    fun onErrorInsertFavoriteMovie(throwable: Throwable)
-    fun insertFavoriteMovie(movie: Movie)
-
-    fun onErrorGetReviewMovie(throwable: Throwable)
-    fun getReviewMovie(idMovie: Int)
-
 }
 
 class MovieViewModel @Inject constructor(
@@ -57,19 +41,6 @@ class MovieViewModel @Inject constructor(
     private val _state = MutableLiveData<LoaderState>()
     val state: LiveData<LoaderState>
         get() = _state
-
-    private val _detailMovie = MutableLiveData<Movie>()
-    val detailMovie: LiveData<Movie>
-        get() = _detailMovie
-
-    private val _favoriteMovies = MutableLiveData<List<Movie>>()
-    val favoriteMovies: LiveData<List<Movie>>
-        get() = _favoriteMovies
-
-    private val _reviews = MutableLiveData<ReviewResponse>()
-    val reviews: LiveData<ReviewResponse>
-        get() = _reviews
-
 
     override fun onErrorPopularMovie(throwable: Throwable) {
         _error.postValue(throwable.message)
@@ -139,94 +110,6 @@ class MovieViewModel @Inject constructor(
             .subscribe {
                 hideLoading()
                 _movies.postValue(it)
-            }
-        )
-    }
-
-    override fun onErrorDetailMovie(throwable: Throwable) {
-        _error.postValue(throwable.message)
-        hideLoading()
-    }
-
-    override fun getDetailMovie(idMovie: Int) {
-        subscribe(useCase.getDetailMovie(idMovie)
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe { showLoading() }
-            .doOnError { onErrorDetailMovie(it) }
-            .subscribe {
-                hideLoading()
-                _detailMovie.postValue(it)
-            }
-        )
-    }
-
-    override fun onErrorGetAllFavoriteMovie(throwable: Throwable) {
-        _error.postValue(throwable.message)
-        hideLoading()
-    }
-
-    override fun getAllFavoriteMovie() {
-        subscribe((useCase.getAllFavoriteMovies())
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe { showLoading() }
-            .doOnError { onErrorPopularMovie(it) }
-            .subscribe {
-                hideLoading()
-                _favoriteMovies.postValue(it)
-            }
-        )
-    }
-
-    override fun onErrorDeleteFavoriteMovie(throwable: Throwable) {
-        _error.postValue(throwable.message)
-        hideLoading()
-    }
-
-    override fun deleteFavoriteMovie(movie: Movie) {
-        subscribe((useCase.deleteFavoritesMovie(movie))
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe { showLoading() }
-            .doOnError { onErrorDeleteFavoriteMovie(it) }
-            .subscribe {
-                hideLoading()
-            }
-        )
-    }
-
-    override fun onErrorInsertFavoriteMovie(throwable: Throwable) {
-        _error.postValue(throwable.message)
-        hideLoading()
-    }
-
-    override fun insertFavoriteMovie(movie: Movie) {
-        subscribe((useCase.insertFavoritesMovie(movie))
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe { showLoading() }
-            .doOnError { onErrorDeleteFavoriteMovie(it) }
-            .subscribe {
-                hideLoading()
-            }
-        )
-    }
-
-    override fun onErrorGetReviewMovie(throwable: Throwable) {
-        _error.postValue(throwable.message)
-        hideLoading()
-    }
-
-    override fun getReviewMovie(idMovie: Int) {
-        subscribe(useCase.getReviewMovies(idMovie)
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe { showLoading() }
-            .doOnError { onErrorGetReviewMovie(it) }
-            .subscribe {
-                hideLoading()
-                _reviews.postValue(it)
             }
         )
     }

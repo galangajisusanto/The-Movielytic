@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.galangaji.themovielytic.R
+import com.galangaji.themovielytic.abstraction.state.FavoriteState
 import com.galangaji.themovielytic.abstraction.state.LoaderState
 import com.galangaji.themovielytic.abstraction.util.load
 import com.galangaji.themovielytic.abstraction.util.showToast
@@ -16,11 +17,12 @@ import com.galangaji.themovielytic.abstraction.util.viewModelProvider
 import com.galangaji.themovielytic.data.entity.Genre
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
-import com.galangaji.themovielytic.di.module.PopularMovieModule
+import com.galangaji.themovielytic.di.module.MovieModule
 import com.galangaji.themovielytic.abstraction.util.DateUtils
 import com.galangaji.themovielytic.data.entity.Review
 import com.galangaji.themovielytic.di.module.RoomModule
-import com.galangaji.themovielytic.viewmodel.MovieViewModel
+import com.galangaji.themovielytic.viewmodel.DetailMovieViewModel
+import com.galangaji.themovielytic.viewmodel.FavoriteMovieViewModel
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_detail.*
 import java.text.SimpleDateFormat
@@ -31,7 +33,8 @@ class DetailMovieActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: MovieViewModel
+    private lateinit var detailViewModel: DetailMovieViewModel
+    private lateinit var favoriteViewModel: FavoriteMovieViewModel
     private var movie = Movie()
     private var isFavorite: Boolean = false
     private lateinit var _adapter: ReviewAdapter
@@ -56,12 +59,13 @@ class DetailMovieActivity : AppCompatActivity() {
 
 
         initInjector()
-        viewModel = viewModelProvider(viewModelFactory)
+        detailViewModel = viewModelProvider(viewModelFactory)
+        favoriteViewModel = viewModelProvider(viewModelFactory)
 
         if (extras != null) {
             val idMovie = extras.getInt(ID_MOVIE)
-            viewModel.getDetailMovie(idMovie)
-            viewModel.getReviewMovie(idMovie)
+            detailViewModel.getDetailMovie(idMovie)
+            detailViewModel.getReviewMovie(idMovie)
         }
 
         initView()
@@ -85,21 +89,21 @@ class DetailMovieActivity : AppCompatActivity() {
 
         img_favorite.setOnClickListener {
             if (isFavorite) {
-                viewModel.deleteFavoriteMovie(movie)
+                favoriteViewModel.deleteFavoriteMovie(movie)
             } else {
-                viewModel.insertFavoriteMovie(movie)
+                favoriteViewModel.insertFavoriteMovie(movie)
             }
-            viewModel.getAllFavoriteMovie()
+            favoriteViewModel.getAllFavoriteMovie()
         }
 
     }
 
     private fun initObservable() {
-        viewModel.error.observe(this, Observer {
+        detailViewModel.error.observe(this, Observer {
             showToast(it)
         })
 
-        viewModel.state.observe(this, Observer {
+        detailViewModel.state.observe(this, Observer {
             when (it) {
                 is LoaderState.ShowLoading -> {
                     showToast("Loading...")
@@ -110,15 +114,21 @@ class DetailMovieActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.detailMovie.observe(this, Observer {
+        detailViewModel.detailMovie.observe(this, Observer {
             this.movie = it
             updateUi(it)
             prepareRecGenres(it.genres)
-            viewModel.getAllFavoriteMovie()
+            favoriteViewModel.getAllFavoriteMovie()
 
         })
 
-        viewModel.favoriteMovies.observe(this, Observer {
+        detailViewModel.reviews.observe(this, Observer {
+            reviews.clear()
+            reviews.addAll(it.results)
+            _adapter.notifyDataSetChanged()
+        })
+
+        favoriteViewModel.favoriteMovies.observe(this, Observer {
             this.isFavorite = it.any { x ->
                 x.id == movie.id
             }
@@ -126,11 +136,19 @@ class DetailMovieActivity : AppCompatActivity() {
 
         })
 
-        viewModel.reviews.observe(this, Observer {
-            reviews.clear()
-            reviews.addAll(it.results)
-            _adapter.notifyDataSetChanged()
+        favoriteViewModel.favoriteState.observe(this, Observer {
+            when (it) {
+                is FavoriteState.InsertSuccess -> {
+                    showToast(" Insert Data Success")
+                }
+                is FavoriteState.DeleteSuccess -> {
+                    showToast("Delete Data Success")
+                }
+            }
         })
+
+
+
     }
 
     private fun setImageFavorite(isFavorite: Boolean) {
@@ -168,7 +186,7 @@ class DetailMovieActivity : AppCompatActivity() {
         DaggerMainComponent
             .builder()
             .roomModule(RoomModule(application))
-            .popularMovieModule(PopularMovieModule())
+            .movieModule(MovieModule())
             .build()
             .injectDetail(this)
     }

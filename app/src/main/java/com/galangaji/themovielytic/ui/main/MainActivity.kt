@@ -4,10 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.galangaji.themovielytic.R
 import com.galangaji.themovielytic.abstraction.state.LoaderState
@@ -15,7 +14,7 @@ import com.galangaji.themovielytic.abstraction.util.showToast
 import com.galangaji.themovielytic.abstraction.util.viewModelProvider
 import com.galangaji.themovielytic.data.entity.Movie
 import com.galangaji.themovielytic.di.DaggerMainComponent
-import com.galangaji.themovielytic.di.module.PopularMovieModule
+import com.galangaji.themovielytic.di.module.MovieModule
 import com.galangaji.themovielytic.di.module.RoomModule
 import com.galangaji.themovielytic.ui.favorite.FavoriteMovieActivity
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
         DaggerMainComponent
             .builder()
             .roomModule(RoomModule(application))
-            .popularMovieModule(PopularMovieModule())
+            .movieModule(MovieModule())
             .build()
             .injectMain(this)
     }

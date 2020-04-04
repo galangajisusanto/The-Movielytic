@@ -16,7 +16,7 @@ import dagger.Provides
 import retrofit2.create
 
 @Module
-class PopularMovieModule {
+class MovieModule {
 
     @Provides
     @MovieScope
@@ -26,7 +26,7 @@ class PopularMovieModule {
 
     @Provides
     @MovieScope
-    fun providePopularMovieRepository(
+    fun provideMovieRepository(
         services: ApiService,
         favoriteMovieDao: FavoriteMovieDao
     ): MovieRepository {
@@ -35,7 +35,7 @@ class PopularMovieModule {
 
     @Provides
     @MovieScope
-    fun providePopularMovieUseCase(repository: MovieRepository): MovieUseCase {
+    fun provideMovieUseCase(repository: MovieRepository): MovieUseCase {
         return MovieUseCase(repository)
     }
 
