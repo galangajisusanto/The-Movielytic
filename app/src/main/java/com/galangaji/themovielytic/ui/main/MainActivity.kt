@@ -1,12 +1,12 @@
 package com.galangaji.themovielytic.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.galangaji.themovielytic.R
 import com.galangaji.themovielytic.abstraction.state.LoaderState
@@ -18,11 +18,10 @@ import com.galangaji.themovielytic.di.module.MovieModule
 import com.galangaji.themovielytic.di.module.RoomModule
 import com.galangaji.themovielytic.ui.favorite.FavoriteMovieActivity
 import com.galangaji.themovielytic.viewmodel.MovieViewModel
-
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryListener {
+class MainActivity : AppCompatActivity(), CategoryListDialogFragment.CategoryListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,6 +41,24 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
 
         initView()
         initObservable()
+    }
+
+    private fun initView() {
+        setSupportActionBar(toolbar_main)
+        toolbar_main.title = getString(R.string.app_name)
+        toolbar_main.setTitleTextColor(ContextCompat.getColor(this, R.color.colorTextTertiary))
+        _adapter = MovieAdapter(movies)
+        lstMovies.apply {
+            layoutManager = LinearLayoutManager(
+                this@MainActivity
+            )
+            adapter = _adapter
+        }
+        categoryDialog = CategoryListDialogFragment.newInstance(this)
+
+        btnChoseCategory.setOnClickListener {
+            categoryDialog.show(supportFragmentManager, "category")
+        }
     }
 
     private fun initObservable() {
@@ -65,23 +82,6 @@ class MainActivity : AppCompatActivity(), CategoryListDialogFragment.categoryLis
             movies.addAll(it.results)
             _adapter.notifyDataSetChanged()
         })
-    }
-
-    private fun initView() {
-        setSupportActionBar(toolbar_main)
-        toolbar_main.title = getString(R.string.app_name)
-        _adapter = MovieAdapter(movies)
-        lstMovies.apply {
-            layoutManager = LinearLayoutManager(
-                this@MainActivity
-            )
-            adapter = _adapter
-        }
-        categoryDialog = CategoryListDialogFragment.newInstance(4, this)
-
-        btnChoseCategory.setOnClickListener {
-            categoryDialog.show(supportFragmentManager, "category")
-        }
     }
 
     private fun initInjector() {

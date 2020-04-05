@@ -22,12 +22,18 @@ import javax.inject.Inject
 
 class FavoriteMovieActivity : AppCompatActivity() {
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: FavoriteMovieViewModel
     private val favoriteMovies = mutableListOf<Movie>()
     private lateinit var _adapter: MovieAdapter
+
+    companion object {
+        @JvmStatic
+        fun generateIntent(context: Context?): Intent {
+            return Intent(context, FavoriteMovieActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,19 +47,11 @@ class FavoriteMovieActivity : AppCompatActivity() {
         initView()
         initObservable()
 
-
-    }
-
-    companion object {
-        @JvmStatic
-        fun generateIntent(context: Context?): Intent {
-            return Intent(context, FavoriteMovieActivity::class.java)
-        }
     }
 
     private fun initView() {
         setSupportActionBar(toolbar_favorite)
-        toolbar_favorite.title = getString(R.string.favorite_movie)
+        supportActionBar?.title = getString(R.string.favorite_movie)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         _adapter = MovieAdapter(favoriteMovies)

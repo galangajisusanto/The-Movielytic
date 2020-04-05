@@ -7,13 +7,10 @@ import com.galangaji.themovielytic.abstraction.state.LoaderState
 import com.galangaji.themovielytic.abstraction.util.rx.TestSchedulerProvider
 import com.galangaji.themovielytic.data.domain.MovieUseCase
 import com.galangaji.themovielytic.data.entity.Movie
-import com.galangaji.themovielytic.data.entity.ReviewResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import org.junit.After
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.*

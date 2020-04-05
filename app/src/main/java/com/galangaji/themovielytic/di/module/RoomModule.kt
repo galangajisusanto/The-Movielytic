@@ -8,23 +8,13 @@ import com.galangaji.themovielytic.di.MovieScope
 import dagger.Module
 import dagger.Provides
 
-import javax.inject.Singleton
-
-
 @Module
-class RoomModule {
-    private var favoriteMovieDatabase: FavoriteMovieDatabase
-
-
-    constructor(mApplication: Application) {
-        favoriteMovieDatabase =
-            Room.databaseBuilder<FavoriteMovieDatabase>(
-                mApplication,
-                FavoriteMovieDatabase::class.java,
-                "favorite_movie.db"
-            ).build()
-
-    }
+class RoomModule(mApplication: Application) {
+    private var favoriteMovieDatabase: FavoriteMovieDatabase = Room.databaseBuilder<FavoriteMovieDatabase>(
+        mApplication,
+        FavoriteMovieDatabase::class.java,
+        "favorite_movie.db"
+    ).build()
 
     @Provides
     @MovieScope

@@ -17,7 +17,6 @@
             app:collapsedTitleTextAppearance="@style/ExpandedTitleToolbar.Collapsed"
             app:expandedTitleGravity="center"
             app:expandedTitleTextAppearance="@style/ExpandedTitleToolbar"
-
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -33,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                android:theme="@style/Theme.MyFancyTheme"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

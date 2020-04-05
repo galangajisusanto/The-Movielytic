@@ -42,7 +42,6 @@ class DetailMovieActivity : AppCompatActivity() {
 
     companion object {
         private const val ID_MOVIE = "id_movie"
-
         @JvmStatic
         fun generateIntent(context: Context?, id: Int): Intent {
             return Intent(context, DetailMovieActivity::class.java).apply {
@@ -56,7 +55,6 @@ class DetailMovieActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_movie)
         val extras = intent.extras
-
 
         initInjector()
         detailViewModel = viewModelProvider(viewModelFactory)
@@ -76,7 +74,6 @@ class DetailMovieActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
         _adapter = ReviewAdapter(reviews)
         list_review.apply {
             layoutManager = LinearLayoutManager(
@@ -84,9 +81,6 @@ class DetailMovieActivity : AppCompatActivity() {
             )
             adapter = _adapter
         }
-
-
-
         img_favorite.setOnClickListener {
             if (isFavorite) {
                 favoriteViewModel.deleteFavoriteMovie(movie)
@@ -95,14 +89,12 @@ class DetailMovieActivity : AppCompatActivity() {
             }
             favoriteViewModel.getAllFavoriteMovie()
         }
-
     }
 
     private fun initObservable() {
         detailViewModel.error.observe(this, Observer {
             showToast(it)
         })
-
         detailViewModel.state.observe(this, Observer {
             when (it) {
                 is LoaderState.ShowLoading -> {
@@ -113,7 +105,6 @@ class DetailMovieActivity : AppCompatActivity() {
                 }
             }
         })
-
         detailViewModel.detailMovie.observe(this, Observer {
             this.movie = it
             updateUi(it)
@@ -121,21 +112,17 @@ class DetailMovieActivity : AppCompatActivity() {
             favoriteViewModel.getAllFavoriteMovie()
 
         })
-
         detailViewModel.reviews.observe(this, Observer {
             reviews.clear()
             reviews.addAll(it.results)
             _adapter.notifyDataSetChanged()
         })
-
         favoriteViewModel.favoriteMovies.observe(this, Observer {
             this.isFavorite = it.any { x ->
                 x.id == movie.id
             }
             setImageFavorite(isFavorite)
-
         })
-
         favoriteViewModel.favoriteState.observe(this, Observer {
             when (it) {
                 is FavoriteState.InsertSuccess -> {
@@ -146,9 +133,6 @@ class DetailMovieActivity : AppCompatActivity() {
                 }
             }
         })
-
-
-
     }
 
     private fun setImageFavorite(isFavorite: Boolean) {
@@ -172,7 +156,6 @@ class DetailMovieActivity : AppCompatActivity() {
         rat_rating.rating = (movie.voteAverage / 2).toFloat()
         rat_rating.isEnabled = false
         txt_overview.text = movie.overview
-
     }
 
     private fun prepareRecGenres(genres: List<Genre>?) {
@@ -195,6 +178,4 @@ class DetailMovieActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
-
-
 }
