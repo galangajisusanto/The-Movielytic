@@ -1,5 +1,5 @@
 ## The-Movielytic
-the movie application base on android architecture mvvm and  rx-java, this app written in kotlin
+The movie application base on android architecture MVVM and fetch data from https://www.themoviedb.org/ open API. This app build using Dagger 2 for Dependency Injector, Rx-Java 2, Retrofit, and Room Database Persistence.This app written in kotlin
 
 ### Prerequisites
 - Android Studio v3+
